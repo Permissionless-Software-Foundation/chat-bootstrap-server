@@ -1,11 +1,11 @@
 {
-  "name": "master-node",
+  "name": "chat-bootstrap-node",
   "version": "1.0.0",
-  "description": "",
-  "main": "master-node.js",
+  "description": "An IPFS bootstrap node for connecting chat app users.",
+  "main": "bootstrap-node.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node master-node.js"
+    "start": "node bootstrap-node.js"
   },
   "author": "Chris Troutner <chris.troutner@gmail.com>",
   "license": "MIT",
