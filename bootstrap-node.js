@@ -2,7 +2,7 @@
 
 // CUSTOMIZE THESE VARIABLES
 const DB_NAME = "orbitdbchatipfs987333979"; //  main db for messages
-const DB_NAME_CONTROL = "db-control9535527"; // db controller  info from private subscriptions y private channels
+const DB_NAME_CONTROL = "db-control9535561"; // db controller  info from private subscriptions y private channels
 const IPFS = require("ipfs");
 const OrbitDB = require("orbit-db");
 const { encrypt, decrypt } = require("./encryption.js");
@@ -10,7 +10,7 @@ const PUBSUB_CHANNEL = "ipfsObitdb-chat";
 let onlineNodes = {};
 let orbitdb;
 let dbControl;
-let gettingPassword = true;
+//let gettingPassword = true;
 let latestMessagesDecrypted = [];
 
 // Pass the encryption password in via environment variable.
@@ -117,7 +117,8 @@ ipfs.on("ready", async () => {
       const userData = {
         username: jsonData.username ? jsonData.username : "",
         date: new Date(),
-        keyId: key
+        keyId: key,
+        publicKey :jsonData.publicKey // public key for encrypt msg
       };
       if (onlineNodes[data.from] == undefined) {
         console.log("system", `${data.from} joined the chat`);
@@ -224,17 +225,15 @@ const queryControl = async (from, to, channelName, dbName, dbID) => {
       dbName: chatData.dbName, //name for private Orbitdb between peer1 and peer2
       dbId: dbID, //id for replicate private Orbitdb between peer1 and peer2
       exist: true,
-      pass: chatData.pass // pass for encrypt/decrypt this room db
     };
 
     const msgEncoded = Buffer.from(JSON.stringify(entry2));
     ipfs.pubsub.publish(from, msgEncoded);
-    orbitdb.eventlog(entry2.dbName, access);
+  //  orbitdb.eventlog(entry2.dbName, access);
     return chatData;
   }
   //   channel betwwen 2 peer not exists. Create and add room info
   try {
-    let newPassword = await generatePassword();
     const entry = {
       peer1: from, //node that emits the petition
       peer2: to, //node that receives the petition
@@ -242,7 +241,6 @@ const queryControl = async (from, to, channelName, dbName, dbID) => {
       dbName: dbName, //name for private Orbitdb between peer1 and peer2
       dbId: dbID, //id for replicate private Orbitdb between peer1 and peer2
       exist: false,
-      pass: newPassword // pass for encrypt/decrypt this room db
     };
 
     // orbitdb.eventlog(entry.dbName, access);
@@ -263,6 +261,8 @@ const queryControl = async (from, to, channelName, dbName, dbID) => {
   }
 };
 
+// old encryption
+/*
 const getPasswordEncryption = () => {
   // get password for encrypt- console
   var standard_input = process.openStdin();
@@ -288,6 +288,7 @@ const getPasswordEncryption = () => {
     }
   });
 };
+
 // Generate password.
 const generatePassword = async () => {
   let long = parseInt(Math.floor(Math.random() * 10 + 7)); //min 7 Characters
@@ -298,3 +299,4 @@ const generatePassword = async () => {
     pass += charts.charAt(Math.floor(Math.random() * charts.length));
   return pass;
 };
+*/
